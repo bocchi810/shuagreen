@@ -1,0 +1,33 @@
+name: shuagreen
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0/3 * * *"
+  workflow_dispatch:
+
+jobs:
+  autogreen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+        
+      - name: commit
+        run: |
+          git config user.name "bocchi810" 
+          git config user.email "admin@haoming9245.top" 
+          git commit --allow-empty -m "a commit a day keeps your girlfriend away"
+          git push
